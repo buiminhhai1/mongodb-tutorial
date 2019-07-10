@@ -1,7 +1,7 @@
-# mongodb-tutorial
+# Mongodb-tutorial and Express-tutorial
 Tutorial mongodb - documents.
 
-I. Connection methods.
+# I. Connection methods.
  1. connect();
  systax: connect(url, user, password);
  (Mục đích: tạo ra một kết nối đến một thể hiển của MONGODB và trả về liên kết tới database.)
@@ -50,3 +50,13 @@ Example:
 The following example instantiates a new connection to the MongoDB instance running on the localhost interface and returns a references to "myDatabase"
 
 db = new Mongo().getDB("myDatabase");
+# II. Response methods.
+1. res.download(): Prompt a file to be downloaded.
+2. res.end(): End the responese process.
+3. res.json(): Send a JSON response.
+4. res.jsonp(): Send a JSON response with JSONP support
+5. res.redirect(): Redirect a request.
+6. res.render(): Render a view template
+7. res.send(): Send a response of various types.
+8. res.sendFile(): Send a file as an octet stream.
+9. res.sendStatus(): Set the response state code and send its string representation as the response body.
