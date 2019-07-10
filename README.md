@@ -77,5 +77,90 @@ Behavior:
 Cursor Handling
 Executing db.collection.find() in the mongo shell automatically iterates the cursor to display up to the first 20 documents
  
+ 2. db.collection.findOneAndUpdate();
+ systax: db.colection.findOneAndUpdate(filter, update, options);
+ Updates a single document based on the filter and sort criteria.
+ 
+ The findOneAndUpdate() method has the following form: 
+ db.collection.findOneAndUpdate(
+   <filter>,
+   <update>,
+   {
+     projection: <document>,
+     sort: <document>,
+     maxTimeMS: <number>,
+     upsert: <boolean>,
+     returnNewDocument: <boolean>,
+     collation: <document>,
+     arrayFilters: [ <filterdocument1>, ... ]
+   }
+)
 
+Parameters:
+- filter: document - The selection criteria for the update. The same query select find() method are available.Specify an empty document {} to update the first document the collection.
+- update: document - the update docment. Must contain only update operation.
+- projection: document - Optional. A subset of fields to return. to return all fields in the returned document, omit this parameter.
+- sort: document - Optional. Specifies a sorting order for the documents matching filter.
+- upsert: boolean - Optional. When true, findOneAndUpdate() either: 
+   + Creates a new document if no documents match the filter. Returns null after inserting the new document, unless returnNewDocument is true.
+   + Update a single document that matches the filter.
+  To avoid multiple upserts, ensure that the filter fields are uniquely indexed.
+   Defaults to false.
+ - returnNewDocment: boolean - Optional. when true, returns the updated document instead of the original document.Default to false.
+ - collation: document - Optional, Specifies the collation to use for the operation. Collation allows users to specify language-specific rules for string comparison, such as rules for lettercase and accent marks.
+ - arrayFilters: array - Optional. An array of filter documents that determindes which array elements to modify for an update operation on an array field.
+   
+Example:
+### Update A document. 
+```python
+The grades collection contains documents similar to the following: 
+{ _id: 6305, name : "A. MacDyver", "assignment" : 5, "points" : 24 },
+{ _id: 6308, name : "B. Batlock", "assignment" : 3, "points" : 22 },
+{ _id: 6312, name : "M. Tagnum", "assignment" : 5, "points" : 30 },
+{ _id: 6319, name : "R. Stiles", "assignment" : 2, "points" : 12 },
+{ _id: 6322, name : "A. MacDyver", "assignment" : 2, "points" : 14 },
+{ _id: 6234, name : "R. Stiles", "assignment" : 1, "points" : 10 }
+```
+The following operation finds the first document where name: R.stiles and increaments the score by 5;
 
+```python
+db.scores.findOneAndUpdate(
+   { "name" : "R. Stiles" },
+   { $inc: { "points" : 5 } }
+)
+```
+The operation returns the original document before the update: 
+```python
+{ _id: 6319, name: "R. Stiles", "assignment" : 2, "points" : 12 }
+```
+### Sort And Update A Document
+the grads collection contains documents similar to the following: 
+```python
+{ _id: 6305, name : "A. MacDyver", "assignment" : 5, "points" : 24 },
+{ _id: 6308, name : "B. Batlock", "assignment" : 3, "points" : 22 },
+{ _id: 6312, name : "M. Tagnum", "assignment" : 5, "points" : 30 },
+{ _id: 6319, name : "R. Stiles", "assignment" : 2, "points" : 12 },
+{ _id: 6322, name : "A. MacDyver", "assignment" : 2, "points" : 14 },
+{ _id: 6234, name : "R. Stiles", "assignment" : 1, "points" : 10 }
+```
+The following operation updates a document where name : "A.Macdyver". The operation sorts the matching documents by points ascending to update the matching docment with the least points.
+
+```python
+db.scores.findOneAndUpdate({
+ "name": "A. MacDuver"},
+ {$inc: {"point" : 5}},
+ {sort: {"point": 1}}
+})
+```
+The operation returns the orginal document before the update
+```python
+{ _id: 6322, name: "A. MacDyver", "assignment" : 2, "points" : 14 }
+```
+### 3. db.collection.insertOne()
+systax: db.collection.insertOne(doc, options, callback) => {Promise}
+Inserts a single document into mongoDB. if documents passed in do not contain the _id_ field, one will be added to each of the documents missing by the driver, mutating the document. This behavior can be overriden by setting the forceServerObjectId flag.
+
+Parameters:
+- doc: object - Document to insert.
+- option: object - Default is null, Optional settings. 
+- callback: collection~insertOnewriteOpCallback - Optional. the command result callback.
