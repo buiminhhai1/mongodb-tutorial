@@ -60,3 +60,22 @@ db = new Mongo().getDB("myDatabase");
 7. res.send(): Send a response of various types.
 8. res.sendFile(): Send a file as an octet stream.
 9. res.sendStatus(): Set the response state code and send its string representation as the response body.
+
+# III. Collection Methods
+1. db.collection.find();
+systax: db.collection.find(query, projection);
+Description: Selects documents in a collection or view and returns a cursor to the selected
+
+Parameters: 
+- query: document - Optional. Specifies selection filter using query operations. To return all document in a collection, omit this parameter or pass an empty document ({});
+- projection document: document - Optional. Specifies the fields to return in the documents that match the query filter. To return all fields in the matching documents, omit this parameter.
+
+Behavior: 
+- Projection: example
+{field1: <value>, field2: <value2>, ...}
+ 
+Cursor Handling
+Executing db.collection.find() in the mongo shell automatically iterates the cursor to display up to the first 20 documents
+ 
+
+
