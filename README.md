@@ -164,3 +164,34 @@ Parameters:
 - doc: object - Document to insert.
 - option: object - Default is null, Optional settings. 
 - callback: collection~insertOnewriteOpCallback - Optional. the command result callback.
+
+### 4.db.collection.findOneAndDelete()
+systax: findOneAndDelete(filter, options, callback); -> {Promise}
+Find a document and delete it in one otomic operation, requires a write lock for the duratior of the operation.
+
+Parameters: 
+- filter: object - Document selection filter.
+- options: object - Default is null, Optional settings.
+- callback: - optional - the collection result callback.
+
+```python
+var MongoClient = require('mongodb').MongoClient,
+  test = require('assert');
+MongoClient.connect('mongodb://localhost:27017/test', function(err, db) {
+  // Get the collection
+  var col = db.collection('find_one_and_delete');
+  col.insertMany([{a:1, b:1}], {w:1}, function(err, r) {
+    test.equal(null, err);
+    test.equal(1, r.result.n);
+
+    col.findOneAndDelete({a:1}
+      , { projection: {b:1}, sort: {a:1} }
+      , function(err, r) {
+        test.equal(null, err);
+        test.equal(1, r.lastErrorObject.n);
+        test.equal(1, r.value.b);
+
+        db.close();
+    });
+  });
+});
